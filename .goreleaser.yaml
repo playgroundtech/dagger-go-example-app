@@ -1,0 +1,53 @@
+# This is an example .goreleaser.yml file with some sensible defaults. Make sure to check the documentation at https://goreleaser.com
+
+project_name: dagger-go-example-app
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    targets:
+      - darwin_amd64
+      - darwin_arm64
+    goamd64:
+    - ""
+    ldflags:
+      - -extldflags '-static'
+      - -s -w -X main.VERSION={{.Version}}
+    no_unique_dist_dir: true
+    binary: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
+archives:
+  - format: binary
+    name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+
+sboms:
+  - artifacts: binary
+    documents:
+      - "${artifact}.sbom"
+
+release:
+  draft: true
+
+checksum:
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_checksums.txt'
+
+changelog:
+  use: github  
+  filters:
+    exclude:
+      - 'docs:'
+      - 'ci:'
+      - 'test:'
+  groups:
+  - title: Features
+    regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+    order: 0
+  - title: 'Bug fixes'
+    regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+    order: 1
+  - title: Others
+    order: 999
