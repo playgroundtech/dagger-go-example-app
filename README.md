@@ -47,7 +47,7 @@ end
 
 - clone the repository, or fork your own copy
 - create a new branch off `main`
-- make your changes and commit them.
+- make your changes and commit them
 - run `go run ./ci/dagger.go --local pull-request` to execute the `pull-request` command locally
 - test the binaries in the `dist` directory
 
